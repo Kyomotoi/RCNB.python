@@ -33,8 +33,8 @@ class RCNB():
     def _div(self, a: int, b: int) -> int:
         return floor(a / b)
     
-    def _checkChinese(self, s) -> str:
-        return ' '.join(map(str, lazy_pinyin(s)))
+    def _checkText(self, s) -> str:
+        return '.'.join(map(str, lazy_pinyin(s))).replace(' ', '..')
 
     def _encodeByte(self, i) -> Union[str, None]:
         if i > 0xFF:
@@ -126,7 +126,7 @@ class RCNB():
         if not isinstance(s, str):
             raise ValueError('Please enter str instead of other')
 
-        return self._encodeBytes(self._checkChinese(s).encode(encoding))
+        return self._encodeBytes(self._checkText(s).encode(encoding))
 
     def _decodeBytes(self, s: str):
         if not isinstance(s, str):
@@ -151,6 +151,17 @@ class RCNB():
             raise ValueError('Please enter str instead of other')
         
         try:
-            return self._decodeBytes(self._checkChinese(s)).decode(encoding)
+            return self._decodeBytes(self._checkText(s)).decode(encoding)
         except UnicodeDecodeError:
             raise ValueError('Decoding failed')
+
+if __name__ == "__main__":
+    r = RCNB()
+
+    c = 'rcnbrcnbrcnb，RCNB！RC太 NB啦！'
+
+    n = r._encode(c)
+    b = r._decode(n)
+
+    print(n)
+    print(b)
